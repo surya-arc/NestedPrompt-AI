@@ -59,7 +59,7 @@ Enhance coding requests to specify programming patterns, error handling, and doc
 
 2. Open `NestedPrompt-AI.html` in your browser
 
-   Alternatively, you can visit [https://nestedprompt-ai.com](https://nestedprompt-ai.com) to use the live version.
+   Alternatively, you can visit [https://nestedpromptai.netlify.app](https://nestedpromptai.netlify.app/) to use the live version.
 
 ## 🔑 API Usage
 
