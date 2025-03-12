@@ -4,7 +4,7 @@
 
 NestedPrompt-AI is a web-based tool designed to enhance and optimize your AI prompts. By adding context, parameters, and specific details to your simple instructions, it helps AI platforms produce higher quality, more accurate results with fewer iterations.
 
-![NestedPrompt-AI Screenshot](https://your-screenshot-url-here.png)
+![NestedPrompt-AI Screenshot](https://github.com/user-attachments/assets/44956075-f653-4d54-914a-9c7c80bfbec3)
 
 ## 📋 Features
 
