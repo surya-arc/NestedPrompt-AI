@@ -1,0 +1,17 @@
+User-agent: *
+Allow: /
+Sitemap: https://nestedprompt-ai.com/sitemap.xml
+
+# Allow all crawlers
+User-agent: *
+Disallow:
+
+# Specific instructions for Googlebot
+User-agent: Googlebot
+Allow: /
+Crawl-delay: 1
+
+# Specific instructions for Bingbot
+User-agent: Bingbot
+Allow: /
+Crawl-delay: 1
