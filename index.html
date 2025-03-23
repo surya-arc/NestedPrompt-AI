@@ -345,6 +345,53 @@
             background-color: #f0f0f0;
             transform: scale(1.05);
         }
+
+        /* New styles for copy button functionality */
+        .result-header-container {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+        }
+        
+        .copy-button {
+            background-color: var(--secondary-color);
+            color: white;
+            border: none;
+            padding: 8px 15px;
+            border-radius: var(--border-radius);
+            cursor: pointer;
+            font-size: 14px;
+            transition: background-color 0.3s, transform 0.2s;
+            display: inline-flex;
+            align-items: center;
+            gap: 5px;
+        }
+        
+        .copy-button:hover {
+            background-color: var(--primary-color);
+            transform: translateY(-2px);
+        }
+        
+        .toast {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            background-color: #4CAF50;
+            color: white;
+            padding: 12px 20px;
+            border-radius: var(--border-radius);
+            box-shadow: var(--box-shadow);
+            z-index: 1000;
+            opacity: 0;
+            transform: translateY(20px);
+            transition: opacity 0.3s, transform 0.3s;
+        }
+        
+        .toast.show {
+            opacity: 1;
+            transform: translateY(0);
+        }
     </style>
     
     <!-- JSON-LD Structured Data -->
@@ -434,7 +481,16 @@
                     </div>
                     
                     <div class="result-card">
-                        <h3 class="result-header">Enhanced Prompt</h3>
+                        <div class="result-header-container">
+                            <h3 class="result-header">Enhanced Prompt</h3>
+                            <button id="copy-button" class="copy-button" aria-label="Copy enhanced prompt to clipboard">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                    <rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect>
+                                    <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path>
+                                </svg>
+                                Copy
+                            </button>
+                        </div>
                         <div class="result-content" id="enhanced-prompt"></div>
                     </div>
                 </div>
@@ -524,6 +580,9 @@
         </footer>
     </div>
 
+    <!-- Toast notification for copy feedback -->
+    <div class="toast" id="copy-toast">Copied to clipboard!</div>
+
     <script>
         /**
          * AI Prompt Enhancer
@@ -581,7 +640,10 @@
             }
 
             const data = await response.json();
-            const enhancedPrompt = data.choices[0].message.content.trim();
+            let enhancedPrompt = data.choices[0].message.content.trim();
+            
+            // Remove \boxed{" "} formatting if present
+            enhancedPrompt = enhancedPrompt.replace(/\\boxed\{"\s*(.*?)\s*"\}/gs, "$1");
             
             return {
               original: userPrompt,
@@ -603,10 +665,13 @@
         const enhancedPromptElement = document.getElementById('enhanced-prompt');
         const errorMessage = document.getElementById('error-message');
         const exampleCards = document.querySelectorAll('.example-card');
+        const copyButton = document.getElementById('copy-button');
+        const copyToast = document.getElementById('copy-toast');
 
         // Event listeners
         enhanceButton.addEventListener('click', handleEnhanceButtonClick);
         clearButton.addEventListener('click', clearForm);
+        copyButton.addEventListener('click', copyEnhancedPrompt);
         exampleCards.forEach(card => {
             card.addEventListener('click', () => {
                 userPromptInput.value = card.dataset.prompt;
@@ -668,6 +733,40 @@
 
         function hideError() {
             errorMessage.style.display = 'none';
+        }
+
+        /* New function to copy enhanced prompt to clipboard */
+        function copyEnhancedPrompt() {
+            const enhancedText = enhancedPromptElement.textContent;
+            
+            if (!enhancedText) {
+                return;
+            }
+            
+            // Create a temporary textarea element to copy from
+            const textarea = document.createElement('textarea');
+            textarea.value = enhancedText;
+            textarea.setAttribute('readonly', '');
+            textarea.style.position = 'absolute';
+            textarea.style.left = '-9999px';
+            document.body.appendChild(textarea);
+            
+            // Select and copy the text
+            textarea.select();
+            document.execCommand('copy');
+            
+            // Remove the temporary element
+            document.body.removeChild(textarea);
+            
+            // Show success toast
+            showToast();
+        }
+        
+        function showToast() {
+            copyToast.classList.add('show');
+            setTimeout(() => {
+                copyToast.classList.remove('show');
+            }, 2000);
         }
     </script>
 </body>
